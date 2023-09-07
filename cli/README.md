@@ -1,6 +1,9 @@
 # schema-tools
 A simple CLI and associated libraries to manage text.
 
+### Random Change
+Random change
+
 ## Usage
 
 `validate-text`
