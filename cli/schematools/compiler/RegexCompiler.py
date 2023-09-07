@@ -30,3 +30,6 @@ class RegexCompiler(Compiler):
             }
         else:
             raise ValueError("Invalid string, cannot compile.")
+
+    def random():
+        pass
