@@ -3,6 +3,7 @@ name: Explorer
 on:
   pull_request:
     types: [closed]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -11,7 +12,7 @@ permissions:
 
 jobs:
   deploy-explorer:
-    if: "${{ contains(github.event.pull_request.labels.*.name, 'deploy: explorer') }}"
+    if: "${{ github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'deploy: explorer') }}"
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
