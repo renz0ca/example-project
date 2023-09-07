@@ -32,3 +32,6 @@ class PageGenerator:
                 </body>
             </html>
         """
+
+    def test(self):
+        pass
