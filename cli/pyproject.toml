@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "rzo-schematools"
-version = "1.1.0"
+version = "1.2.0"
 description = "A simple CLI and associated libraries to manage schemas."
 readme = { file = "README.md", content-type = "text/markdown" }
 requires-python = ">=3.10"
