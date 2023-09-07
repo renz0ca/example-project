@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/renz0ca/example-project/compare/rzo-schemaexplorer-v1.0.0...rzo-schemaexplorer-v1.1.0) (2023-09-07)
+
+
+### Features
+
+* add explorer feature ([f1694e1](https://github.com/renz0ca/example-project/commit/f1694e195d74213e00e10069fdbd566f5002b228))
+
 ## [1.0.0](https://github.com/renz0ca/example-project/compare/rzo-schemaexplorer-v0.1.1...rzo-schemaexplorer-v1.0.0) (2023-09-07)
 
 
