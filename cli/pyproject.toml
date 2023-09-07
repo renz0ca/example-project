@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rzo-schematools"
+version = "0.0.0"
+description = "A simple CLI and associated libraries to manage schemas."
+readme = { file = "README.md", content-type = "text/markdown" }
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+authors = [{ name = "renzoca" }]
+keywords = ["schema validation", "schema compilation"]
+classifiers = ["Programming Language :: Python :: 3"]
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pre-commit==3.4.0"]
+
+[project.urls]
+Repository = "https://github.com/renz0ca/example-project"
+
+[tool.setuptools.packages.find]
+
+[tool.ruff]
+select = ["E", "F", "W", "I"]

@@ -1,0 +1,16 @@
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.3.0
+    hooks:
+    -   id: check-toml
+    -   id: check-yaml
+- repo: https://github.com/astral-sh/ruff-pre-commit
+  # Ruff version.
+  rev: v0.0.287
+  hooks:
+    - id: ruff
+      name: "ruff (cli)"
+      files: '^cli/.*\.py'
+    - id: ruff
+      name: "ruff (viewer)"
+      files: '^explorer/.*\.py'
