@@ -12,3 +12,6 @@ options:
   -t TEXT, --text TEXT
   -p PATH, --path PATH
 ```
+
+## Another new thing...
+another new thing
