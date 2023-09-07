@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.1.0](https://github.com/renz0ca/example-project/compare/rzo-schematools-v1.0.0...rzo-schematools-v1.1.0) (2023-09-07)
+
+
+### Features
+
+* **validator:** adds a new feature ([8e583e3](https://github.com/renz0ca/example-project/commit/8e583e34030d10bbdea657c323bde19f7c1c9c3a))
+
+
+### Bug Fixes
+
+* **utils:** unicode no longer throws exception ([8e583e3](https://github.com/renz0ca/example-project/commit/8e583e34030d10bbdea657c323bde19f7c1c9c3a))
+
 ## [1.0.0](https://github.com/renz0ca/example-project/compare/rzo-schematools-v0.1.1...rzo-schematools-v1.0.0) (2023-09-07)
 
 
