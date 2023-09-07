@@ -67,7 +67,7 @@
             "release-type": "python",
             "initial-version": "0.0.0"
         },
-        "viewer": {
+        "explorer": {
             "component": "rzo-schemaexplorer",
             "release-type": "python",
             "initial-version": "0.0.0"
