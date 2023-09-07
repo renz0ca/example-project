@@ -3,10 +3,11 @@ name: CLI
 on:
   pull_request:
     types: [closed]
+  workflow_dispatch:
 
 jobs:
   deploy-cli:
-    if: "${{ contains(github.event.pull_request.labels.*.name, 'deploy: cli') }}"
+    if: "${{ github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'deploy: cli') }}"
     runs-on: ubuntu-latest
     environment: pypi
     permissions:
