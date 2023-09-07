@@ -20,7 +20,7 @@ class RegexValidator(Validator):
         Returns:
             bool: True if the string is valid, false otherwise.
         """
-        if type(string) is string:
+        if isinstance(string, str):
             return re.match(self.__validator, string) is not None
         else:
             raise TypeError("Expected string.")
