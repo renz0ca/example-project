@@ -1,0 +1,22 @@
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  texttools_cli:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    - name: Install Viewer
+      run: |
+        pip install "./viewer"
+        pip list -v
+    - name: Test Viewer
+      run: |
+        generate-page -t "Hello World\!"
