@@ -13,5 +13,5 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - uses: actions/labeler@v4
-    - uses: ./.github/workflows/test-cli.yml
-    - uses: ./.github/workflows/test-explorer.yml
+    - uses: .github/workflows/test-cli.yml
+    - uses: .github/workflows/test-explorer.yml
