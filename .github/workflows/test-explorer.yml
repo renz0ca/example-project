@@ -1,0 +1,23 @@
+name: Explorer Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  texttools_cli:
+    if: "${{ github.event_name == 'push' || contains(github.event.pull_request.labels.*.name, 'Schema Explorer') }}"
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    - name: Install Explorer
+      run: |
+        pip install "./explorer"
+        pip list -v
+    - name: Test Explorer
+      run: |
+        generate-page -t "Hello World\!"

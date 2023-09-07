@@ -1,0 +1,5 @@
+"Schema CLI":
+- cli/**
+
+"Schema Explorer":
+- explorer/**
