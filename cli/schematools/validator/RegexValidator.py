@@ -24,3 +24,6 @@ class RegexValidator(Validator):
             return re.match(self.__validator, string) is not None
         else:
             raise TypeError("Expected string.")
+
+    def new_feature():
+        pass
