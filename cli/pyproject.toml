@@ -20,6 +20,10 @@ dev = ["pre-commit==3.4.0"]
 [project.urls]
 Repository = "https://github.com/renz0ca/example-project"
 
+[project.scripts]
+compile-text = "schematools.cli:compile_cli"
+validate-text = "schematools.cli:validate_cli"
+
 [tool.setuptools.packages.find]
 
 [tool.ruff]
