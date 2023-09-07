@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "rzo-schemaexplorer"
-version = "0.1.1"
+version = "1.0.0"
 description = "A small command line tool to generate pages."
 readme = { file = "README.md", content-type = "text/markdown" }
 requires-python = ">=3.10"
