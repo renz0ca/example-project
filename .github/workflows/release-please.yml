@@ -14,5 +14,17 @@ jobs:
     runs-on: self-hosted
     steps:
       - uses: google-github-actions/release-please-action@v3
+        id: "google"
         with:
           command: manifest
+      - run: |
+          echo ${{ steps.google.outputs.releases_created }}
+          echo ${{ steps.google.outputs.upload_url }}
+          echo ${{ steps.google.outputs.html_url }}
+          echo ${{ steps.google.outputs.tag_name }}
+          echo ${{ steps.google.outputs.major }}
+          echo ${{ steps.google.outputs.minor }}
+          echo ${{ steps.google.outputs.patch }}
+          echo ${{ steps.google.outputs.sha }}
+          echo ${{ steps.google.outputs.pr }}
+          echo ${{ steps.google.outputs.prs }}
