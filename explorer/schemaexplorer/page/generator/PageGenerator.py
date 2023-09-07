@@ -7,7 +7,10 @@ class PageGenerator:
         Args:
             text (str): The page's text.
         """
-        self.__text = text
+        if isinstance(text, str):
+            self.__text = text
+        else:
+            raise TypeError("String expected.")
 
     def generate(self):
         """
