@@ -1,5 +1,7 @@
 "Schema CLI":
 - cli/**
+- .github/workflows/test-cli.yml
 
 "Schema Explorer":
 - explorer/**
+- .github/workflows/text-explorer.yml
