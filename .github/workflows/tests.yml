@@ -22,10 +22,10 @@ jobs:
         validate-text -t "1233 asdasd"
         validate-text -t "1233asdasd"
         compile-text -t "1234 asdasd"
-    - name: Install Viewer
+    - name: Install Explorer
       run: |
-        pip install "./viewer"
+        pip install "./explorer"
         pip list -v
-    - name: Test Viewer
+    - name: Test Explorer
       run: |
         generate-page -t "Hello World\!"
