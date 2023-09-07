@@ -8,10 +8,8 @@ on:
 jobs:
   deploy-cli:
     if: |
-      ${{ 
-        github.event_name == 'workflow_dispatch' || 
-        contains(github.event.pull_request.labels.*.name, 'deploy: cli')
-      }}
+      github.event_name == 'workflow_dispatch' || 
+      contains(github.event.pull_request.labels.*.name, 'deploy: cli')
     runs-on: ubuntu-latest
     environment: pypi
     permissions:
