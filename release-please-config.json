@@ -1,5 +1,5 @@
 {
-    "prerelease": true,
+    "skip-github-release": true,
     "bump-minor-pre-major": true,
     "bump-patch-for-minor-pre-major": true,
     "changelog-sections": [
@@ -63,13 +63,13 @@
     "include-component-in-tag": true,
     "packages": {
         "cli": {
-            "prerelease": true,
+            "skip-github-release": true,
             "component": "rzo-schematools",
             "release-type": "python",
             "initial-version": "0.0.0"
         },
         "explorer": {
-            "prerelease": true,
+            "skip-github-release": true,
             "component": "rzo-schemaexplorer",
             "release-type": "python",
             "initial-version": "0.0.0"
