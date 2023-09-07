@@ -13,11 +13,13 @@ jobs:
   release-please:
     runs-on: self-hosted
     steps:
-      - uses: google-github-actions/release-please-action@v3
+      - name: Update Release
+        uses: google-github-actions/release-please-action@v3
         id: "google"
         with:
           command: manifest
-      - run: |
+      - name: Update Tags
+        run: |
           echo ${{ steps.google.outputs.releases_created }}
           echo ${{ steps.google.outputs.upload_url }}
           echo ${{ steps.google.outputs.html_url }}
