@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0](https://github.com/renz0ca/example-project/compare/rzo-schemaexplorer-v0.1.1...rzo-schemaexplorer-v1.0.0) (2023-09-07)
+
+
+### Miscellaneous Chores
+
+* release 1.0.0 ([fd77fb1](https://github.com/renz0ca/example-project/commit/fd77fb1cb53f009971d4a76977af158fb08d01ae))
+
 ## [0.1.1](https://github.com/renz0ca/example-project/compare/rzo-schemaexplorer-v0.1.0...rzo-schemaexplorer-v0.1.1) (2023-09-07)
 
 
