@@ -1,0 +1,51 @@
+name: Explorer
+
+on:
+  pull_request:
+    types: [closed]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  deploy-explorer:
+    if: "${{ contains(github.event.pull_request.labels.*.name, 'deploy: explorer') }}"
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    - name: Install Explorer
+      run: |
+        pip install "./explorer"
+    - name: Build Explorer
+      run: generate-page -t "Hello World\!"
+    - name: Upload Explorer
+      uses: actions/upload-artifact@v3
+      with:
+        name: explorer
+        path: ./dist/
+  github_pages:
+    needs: deploy-explorer
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+    - name: Setup Pages
+      uses: actions/configure-pages@v2
+    - name: Download Explorer artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: explorer
+        path: ./explorer
+    - name: Upload Explorer artifact
+      uses: actions/upload-pages-artifact@v1
+      with:
+        path: ./explorer
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v1
