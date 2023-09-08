@@ -62,13 +62,11 @@
     "include-component-in-tag": true,
     "packages": {
         "cli": {
-            "skip-github-release": true,
             "component": "rzo-schematools",
             "release-type": "python",
             "initial-version": "0.0.0"
         },
         "explorer": {
-            "skip-github-release": true,
             "component": "rzo-schemaexplorer",
             "release-type": "python",
             "initial-version": "0.0.0"
