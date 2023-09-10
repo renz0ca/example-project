@@ -4,7 +4,7 @@ inputs:
   token:
     description: 'GitHub token for creating tags.'
     required: false
-    default: ${{ secrets.GITHUB_TOKEN }}
+    default: ${{ github.token }}
   release-please-config:
     description: 'Path to the release-please configuration.'
     required: false
