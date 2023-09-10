@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://github.com/renz0ca/example-project/compare/rzo-schematools-v1.4.0...rzo-schematools-v1.5.0) (2023-09-10)
+
+
+### Features
+
+* a new change ([03879f1](https://github.com/renz0ca/example-project/commit/03879f1d7ac03d317704f6ee865b41c4da0341b1))
+
 ## [1.4.0](https://github.com/renz0ca/example-project/compare/rzo-schematools-v1.3.0...rzo-schematools-v1.4.0) (2023-09-08)
 
 
