@@ -12,7 +12,7 @@ inputs:
   release-please-manifest:
     description: 'The path to the release-please manifest.'
     required: false
-    default: './release-please-manifest.json'
+    default: './.release-please-manifest.json'
 outputs:
   time: # id of output
     description: 'The time we greeted you'

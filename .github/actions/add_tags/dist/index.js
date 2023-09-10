@@ -9980,8 +9980,6 @@ const process = __nccwpck_require__(7282);
 
     try {
 
-        console.log(process.cwd())
-
         // 1. Get action inputs
         const TOKEN = core.getInput("token");
         const RELEASE_PLEASE_CONFIG = core.getInput('release-please-config');
