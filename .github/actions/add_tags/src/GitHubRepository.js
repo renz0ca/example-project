@@ -39,6 +39,7 @@ class GitHubRepository {
      *  The list of tags.
      */
     async *iterateTags() {
+        console.log(this.context);
         let per_page = 100;
         for (let page = 0; true; page++) {
             // Fetch tags
