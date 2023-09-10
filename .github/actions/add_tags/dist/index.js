@@ -9971,6 +9971,7 @@ var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
 const core = __nccwpck_require__(2186);
+const github = __nccwpck_require__(5438);
 const { Package } = __nccwpck_require__(885);
 const { GitHubRepository } = __nccwpck_require__(846);
 const { existsSync, readFileSync } = __nccwpck_require__(7147);

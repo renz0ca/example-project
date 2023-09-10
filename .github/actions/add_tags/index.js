@@ -1,4 +1,5 @@
 const core = require('@actions/core');
+const github = require('@actions/github');
 const { Package } = require("./src/Package");
 const { GitHubRepository } = require("./src/GitHubRepository");
 const { existsSync, readFileSync } = require("fs");
