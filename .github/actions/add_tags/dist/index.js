@@ -9988,8 +9988,6 @@ const process = __nccwpck_require__(7282);
         const RELEASE_PLEASE_CONFIG = core.getInput('release-please-config');
         const RELEASE_PLEASE_MANIFEST = core.getInput('release-please-manifest');
 
-        console.log(TOKEN);
-
         // 2. Load release-please configuration and manifest
         let config, manifest;
         if (!existsSync(RELEASE_PLEASE_CONFIG)) {
