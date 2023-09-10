@@ -10063,7 +10063,7 @@ const process = __nccwpck_require__(7282);
         }
 
     } catch (err) {
-        core.setFailed(err.message);
+        core.setFailed(`${err.constructor.name}: ${err.message}`);
         core.setFailed(err.stack);
     }
 

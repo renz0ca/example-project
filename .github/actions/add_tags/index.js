@@ -91,7 +91,7 @@ const process = require("process");
         }
 
     } catch (err) {
-        core.setFailed(err.message);
+        core.setFailed(`${err.constructor.name}: ${err.message}`);
         core.setFailed(err.stack);
     }
 
