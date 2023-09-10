@@ -28,14 +28,14 @@ const process = require("process");
         console.log("✓ Configuration and Manifest files located.")
 
         // 3. Compile package list
-        let packages = Object.entries(config.packages);
+        let packages = config.packages;
         let unresolvedPackages = new Map();
-        if (packages.length === 0) {
+        if (Object.keys(packages).length === 0) {
             throw new Error("No packages to tag.")
         } else {
-            for (let loc of packages) {
+            for (let loc in packages) {
                 let version = manifest[loc];
-                let component = packages[loc].component;
+                let component = packages[loc].component ?? "";
                 let tagIncludesName =
                     packages[loc]["include-component-in-tag"] ??
                     packages["include-component-in-tag"] ??
