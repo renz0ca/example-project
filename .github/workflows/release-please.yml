@@ -19,14 +19,4 @@ jobs:
         with:
           command: manifest
       - name: Update Tags
-        run: |
-          echo ${{ steps.google.outputs.releases_created }}
-          echo ${{ steps.google.outputs.upload_url }}
-          echo ${{ steps.google.outputs.html_url }}
-          echo ${{ steps.google.outputs.tag_name }}
-          echo ${{ steps.google.outputs.major }}
-          echo ${{ steps.google.outputs.minor }}
-          echo ${{ steps.google.outputs.patch }}
-          echo ${{ steps.google.outputs.sha }}
-          echo ${{ steps.google.outputs.pr }}
-          echo ${{ steps.google.outputs.prs }}
+        uses: ./add_tags
