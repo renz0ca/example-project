@@ -9669,7 +9669,11 @@ class GitHubRepository {
             type: "commit",
             object: this.context.sha
         });
-
+        // Validate status
+        if (resp.status !== 200) {
+            console.log(resp);
+            throw new Error(`Failed to create tag '${tag}'. [Status: ${resp.status}]`)
+        }
     }
 
     /**
