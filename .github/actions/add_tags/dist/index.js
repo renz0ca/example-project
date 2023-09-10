@@ -9865,6 +9865,14 @@ module.exports = require("path");
 
 /***/ }),
 
+/***/ 7282:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("process");
+
+/***/ }),
+
 /***/ 5477:
 /***/ ((module) => {
 
@@ -9966,10 +9974,13 @@ const core = __nccwpck_require__(2186);
 const { Package } = __nccwpck_require__(885);
 const { GitHubRepository } = __nccwpck_require__(846);
 const { existsSync, readFileSync } = __nccwpck_require__(7147);
+const process = __nccwpck_require__(7282);
 
 (async function () {
 
     try {
+
+        console.log(process.cwd())
 
         // 1. Get action inputs
         const TOKEN = core.getInput("token");

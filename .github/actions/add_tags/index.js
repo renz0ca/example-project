@@ -2,10 +2,13 @@ const core = require('@actions/core');
 const { Package } = require("./src/Package");
 const { GitHubRepository } = require("./src/GitHubRepository");
 const { existsSync, readFileSync } = require("fs");
+const process = require("process");
 
 (async function () {
 
     try {
+
+        console.log(process.cwd())
 
         // 1. Get action inputs
         const TOKEN = core.getInput("token");
