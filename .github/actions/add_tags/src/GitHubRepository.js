@@ -49,8 +49,8 @@ class GitHubRepository {
                 page
             });
             // Validate status
-            if (resp.status !== 200) {
-                throw new Error(`Failed to fetch tags. [Status: ${resp.status}]`)
+            if (tags.status !== 200) {
+                throw new Error(`Failed to fetch tags. [Status: ${tags.status}]`)
             }
             // Iterate tags
             for (let tag of tags.data) {

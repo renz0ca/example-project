@@ -75,7 +75,7 @@ const process = require("process");
                 }
             }
             // If no packages left to resolve, stop iteration
-            if (unresolvedPackages.size() === 0) {
+            if (unresolvedPackages.size === 0) {
                 break;
             }
         }
@@ -85,7 +85,7 @@ const process = require("process");
         for (let tag of createTags) {
             repo.createCommitTag(tag);
         }
-        console.log(`✓ Created ${createTags.length} new tags.`);
+        console.log(`✓ Created ${createTags.size} new tags.`);
         for (let tag of createTags) {
             console.log(`  - ${tag}`);
         }

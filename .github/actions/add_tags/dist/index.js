@@ -9685,8 +9685,8 @@ class GitHubRepository {
                 page
             });
             // Validate status
-            if (resp.status !== 200) {
-                throw new Error(`Failed to fetch tags. [Status: ${resp.status}]`)
+            if (tags.status !== 200) {
+                throw new Error(`Failed to fetch tags. [Status: ${tags.status}]`)
             }
             // Iterate tags
             for (let tag of tags.data) {
@@ -10047,7 +10047,7 @@ const process = __nccwpck_require__(7282);
                 }
             }
             // If no packages left to resolve, stop iteration
-            if (unresolvedPackages.size() === 0) {
+            if (unresolvedPackages.size === 0) {
                 break;
             }
         }
@@ -10057,7 +10057,7 @@ const process = __nccwpck_require__(7282);
         for (let tag of createTags) {
             repo.createCommitTag(tag);
         }
-        console.log(`✓ Created ${createTags.length} new tags.`);
+        console.log(`✓ Created ${createTags.size} new tags.`);
         for (let tag of createTags) {
             console.log(`  - ${tag}`);
         }
