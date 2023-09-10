@@ -10,6 +10,7 @@ class GitHubRepository {
      *  The GitHub context to use.
      */
     constructor(token, context) {
+        console.log(JSON.stringify(context, null, 2))
         let { payload: { repository: { owner, name } } } = context;
         this.repo = name;
         this.owner = owner.login;
