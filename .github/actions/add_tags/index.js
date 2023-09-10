@@ -54,7 +54,7 @@ const process = require("process");
             }
         }
         console.log(`✓ Found ${unresolvedPackages.size} Packages.`);
-        for (let package of unresolvedPackages) {
+        for (let package of unresolvedPackages.values()) {
             console.log(`  - ${package.getTag()}`)
         }
 

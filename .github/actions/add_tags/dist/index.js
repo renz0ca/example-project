@@ -10026,7 +10026,7 @@ const process = __nccwpck_require__(7282);
             }
         }
         console.log(`✓ Found ${unresolvedPackages.size} Packages.`);
-        for (let package of unresolvedPackages) {
+        for (let package of unresolvedPackages.values()) {
             console.log(`  - ${package.getTag()}`)
         }
 
