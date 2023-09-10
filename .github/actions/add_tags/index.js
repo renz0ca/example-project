@@ -92,6 +92,7 @@ const process = require("process");
 
     } catch (err) {
         core.setFailed(err.message);
+        core.setFailed(err.stack);
     }
 
 })()
