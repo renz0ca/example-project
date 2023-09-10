@@ -19,4 +19,5 @@ jobs:
         with:
           command: manifest
       - name: Update Tags
-        uses: ./add_tags
+        uses: actions/checkout@v3
+      - uses: ./.github/actions/add_tags
