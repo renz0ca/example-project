@@ -24,19 +24,16 @@ class GitHubRepository {
      *  The tag name.
      */
     async createCommitTag(tag) {
-        // Create tag
-        let resp = await this.octokit.rest.git.createTag({
+        // Create lightweight tag
+        let tagRef = await this.octokit.rest.git.createRef({
             owner: this.owner,
             repo: this.repo,
-            tag: tag,
-            message: "",
-            type: "commit",
-            object: this.context.sha
+            ref: `refs/tags/${tag}`,
+            sha: this.context.sha
         });
         // Validate status
-        if (resp.status !== 200) {
-            console.log(resp);
-            throw new Error(`Failed to create tag '${tag}'. [Status: ${resp.status}]`)
+        if (tagRef.status !== 201) {
+            throw new Error(`Failed to create ref '${tag}'. [status: ${tagObj.status}]`)
         }
     }
 
@@ -57,7 +54,7 @@ class GitHubRepository {
             });
             // Validate status
             if (tags.status !== 200) {
-                throw new Error(`Failed to fetch tags. [Status: ${tags.status}]`)
+                throw new Error(`Failed to fetch tags. [status: ${tags.status}]`)
             }
             // Iterate tags
             for (let tag of tags.data) {
