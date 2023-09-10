@@ -23,8 +23,8 @@ class GitHubRepository {
     async createCommitTag(tag) {
         // Create tag
         let resp = await this.octokit.rest.git.createTag({
-            owner: this.context.owner,
-            repo: this.context.repo,
+            owner: this.context.repository.name,
+            repo: this.context.repository.name,
             tag: tag,
             message: "",
             type: "commit",
@@ -39,13 +39,13 @@ class GitHubRepository {
      *  The list of tags.
      */
     async *iterateTags() {
-        console.log(this.context);
+        console.log(this.context.repository.owner);
         let per_page = 100;
         for (let page = 0; true; page++) {
             // Fetch tags
             let tags = await this.octokit.rest.repos.listTags({
-                owner: this.context.owner,
-                repo: this.context.repo,
+                owner: this.context.repository.repo,
+                repo: this.context.repository.name,
                 per_page,
                 page
             });
