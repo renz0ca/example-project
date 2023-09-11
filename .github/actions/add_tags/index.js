@@ -1,73 +1,46 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
-const { Package } = require("./src/Package");
+const { Logger } = require('./src/Logger');
+const { PackageParser } = require('./src/PackageParser/PackageParser');
 const { GitHubRepository } = require("./src/GitHubRepository");
-const { existsSync, readFileSync } = require("fs");
-const process = require("process");
 
 (async function () {
 
     try {
+
+        let logger = new Logger();
+        let repository = new GitHubRepository(TOKEN, github.context);
 
         // 1. Get action inputs
         const TOKEN = core.getInput("token");
         const RELEASE_PLEASE_CONFIG = core.getInput('release-please-config');
         const RELEASE_PLEASE_MANIFEST = core.getInput('release-please-manifest');
 
-        // 2. Load release-please configuration and manifest
-        let config, manifest;
-        if (!existsSync(RELEASE_PLEASE_CONFIG)) {
-            throw new Error(`Configuration '${RELEASE_PLEASE_CONFIG}' not found.`);
-        } else if (!existsSync(RELEASE_PLEASE_MANIFEST)) {
-            throw new Error(`Manifest '${RELEASE_PLEASE_MANIFEST}' not found.`);
-        } else {
-            config = readFileSync(RELEASE_PLEASE_CONFIG);
-            config = JSON.parse(config.toString("utf-8"));
-            manifest = readFileSync(RELEASE_PLEASE_MANIFEST).toString("utf-8");
-            manifest = JSON.parse(manifest.toString("utf-8"));
-        }
-        console.log("✓ Configuration and Manifest files located.")
+        // 2. Load configuration and manifest
+        let parser = new PackageParser(
+            RELEASE_PLEASE_CONFIG,
+            RELEASE_PLEASE_MANIFEST
+        );
+        logger.info("Loaded configuration and Manifest files.")
 
         // 3. Compile package list
-        let packages = config.packages;
-        let unresolvedPackages = new Map();
-        if (Object.keys(packages).length === 0) {
-            throw new Error("No packages to tag.")
-        } else {
-            for (let loc in packages) {
-                let version = manifest[loc];
-                let component = packages[loc].component ?? "";
-                let tagIncludesName =
-                    packages[loc]["include-component-in-tag"] ??
-                    packages["include-component-in-tag"] ??
-                    true;
-                let tagIncludesV =
-                    packages[loc]["include-v-in-tag"] ??
-                    packages["include-v-in-tag"] ??
-                    true;
-                let package = new Package(
-                    component,
-                    version,
-                    tagIncludesV,
-                    tagIncludesName
-                );
-                unresolvedPackages.set(package.getTag(), package);
-            }
+        let packages = parser.packages;
+        if (packages.size === 0) {
+            throw new Error("No packages found.")
         }
-        console.log(`✓ Found ${unresolvedPackages.size} Packages.`);
-        for (let package of unresolvedPackages.values()) {
-            console.log(`  - ${package.getTag()}`)
+        logger.info(`Found ${packages.size} packages.`);
+        for (let package of packages.values()) {
+            logger.info(`  - ${package.getTag()}`)
         }
 
-        // 4. Resolve packages and tags
-        let createTags = new Set([...unresolvedPackages.keys()]);
-        let repo = new GitHubRepository(TOKEN, github.context);
+        // 4. Resolve tags
+        let createTags = new Set([...packages.keys()]);
         // For each repository tag...
-        for await (let repositoryTag of repo.iterateTags()) {
-            // ...attempt to resolve a package
-            for (let [packageTag, package] of unresolvedPackages) {
+        for await (let repositoryTag of repository.iterateTags()) {
+            // ...attempt to match it to a package tag
+            for (let [packageTag, package] of packages) {
                 if (package.isAssociatedWithTag(repositoryTag)) {
-                    unresolvedPackages.delete(packageTag);
+                    packages.delete(packageTag);
                     if (repositoryTag === packageTag) {
                         createTags.delete(packageTag);
                     }
@@ -75,19 +48,38 @@ const process = require("process");
                 }
             }
             // If no packages left to resolve, stop iteration
-            if (unresolvedPackages.size === 0) {
+            if (packages.size === 0) {
                 break;
             }
         }
-        console.log(`✓ Resolved Tags`)
+        logger.info("Resolved tags.");
 
-        // Create new tags
+        // 5. Create new tags
         for (let tag of createTags) {
-            repo.createCommitTag(tag);
+            repository.createTag(tag);
         }
-        console.log(`✓ Created ${createTags.size} new tags.`);
+        logger.info(`Created ${createTags.size} new tags.`);
         for (let tag of createTags) {
-            console.log(`  - ${tag}`);
+            logger.info(`  - ${tag}`);
+        }
+
+        // 6. Update Pull Request
+        let prs = await Promise.all(repository.iteratePullRequests({
+            branch: "release-please--branches--main",
+            labels: ["autorelease: pending"],
+            state: "closed"
+        }));
+        if (prs.length === 0) {
+            logger.info(`No release PR to update.`);
+        } else {
+            let pr = prs[0];
+            if (prs.length === 1) {
+                logger.info(`Found release PR: ${pr.title} (#${pr.number}).`);
+            } else {
+                logger.warning(`Found multiple release PRs, selecting newest.`);
+            }
+            repository.setPullRequestLabel(pr.number, ["autorelease: tagged"]);
+            logger.info(`Updated release PRs tags.`)
         }
 
     } catch (err) {

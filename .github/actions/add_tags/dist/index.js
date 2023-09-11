@@ -9636,6 +9636,17 @@ function wrappy (fn, cb) {
 
 const github = __nccwpck_require__(5438);
 
+/**
+ * @typedef {Object} PullRequestFilters
+ *  Available pull request filters.
+ * @property {string} state
+ *  The pull request' state. (open, closed, all)
+ * @property {string} branch
+ *  The pull request's branch.
+ * @property {string[]} labels
+ *  The pull request's labels.
+ */
+
 class GitHubRepository {
 
     /**
@@ -9655,13 +9666,14 @@ class GitHubRepository {
 
 
     /**
-     * Creates a tag at the commit identified by the current context.
+     * Creates a lightweight tag at the commit identified by the context.
      * @param {string} tag
      *  The tag name.
      */
-    async createCommitTag(tag) {
+    async createTag(tag) {
+        let { createRef } = this.octokit.rest.git;
         // Create lightweight tag
-        let tagRef = await this.octokit.rest.git.createRef({
+        let tagRef = await createRef({
             owner: this.owner,
             repo: this.repo,
             ref: `refs/tags/${tag}`,
@@ -9674,15 +9686,16 @@ class GitHubRepository {
     }
 
     /**
-     * Iterates through the repository's tags.
+     * Iterates through the repository's tags from newest to oldest.
      * @returns {AsyncGenerator<string>}
      *  The list of tags.
      */
     async *iterateTags() {
         let per_page = 100;
+        let { listTags } = this.octokit.rest.repos;
         for (let page = 0; true; page++) {
             // Fetch tags
-            let tags = await this.octokit.rest.repos.listTags({
+            let tags = await listTags({
                 owner: this.owner,
                 repo: this.repo,
                 per_page,
@@ -9697,9 +9710,77 @@ class GitHubRepository {
                 yield tag.name;
             }
             // If at last page, return
-            if (tags.length < per_page) {
+            if (tags.data.length < per_page) {
                 break;
             }
+        }
+    }
+
+    /**
+     * Iterates through the repository's pull requests from newest to oldest. 
+     * @param {PullRequestFilters} filters
+     *  The filters to apply to the iteration.
+     * @returns {AsyncGenerator<Object>}
+     *  The list of pull requests.
+     */
+    async *iteratePullRequests(filters) {
+        let per_page = 100;
+        let { list } = this.octokit.rest.pulls;
+        let { state, branch, labels } = filters;
+        labels ?? [];
+        for (let page = 0; ; i++) {
+            // Fetch pull requests
+            let prs = await list({
+                owner: this.owner,
+                repo: this.repo,
+                head: branch ? `${this.owner}:${branch}` : branch,
+                state,
+                sort: "created",
+                direction: "desc",
+                per_page,
+                page
+            });
+            // Validate status
+            if (prs.status !== 200) {
+                throw new Error(`Failed to fetch pull requests. [status: ${tags.status}]`);
+            }
+            // Iterate prs
+            for (let pr of prs.data) {
+                let doesPullRequestMatchLabels = labels.length === 0 || labels.reduce(
+                    (a, b) => a || pr.labels.findIndex(o => o.name === b) !== -1,
+                    false
+                );
+                if (doesPullRequestMatchLabels) {
+                    yield pr;
+                }
+            }
+            // If at last page, return
+            if (prs.data.length < per_page) {
+                break;
+            }
+        }
+    }
+
+    /**
+     * Removes any previous labels and sets the new labels for a pull request.
+     * @param number
+     *  The pull request's number.
+     * @param labels
+     *  The pull request's new labels.
+     */
+    async setPullRequestLabel(number, labels) {
+        let { setLabels } = octokit.rest.issues;
+        labels = labels.map(o => ({ name: o }));
+        // Set labels
+        let resp = await setLabels({
+            owner: this.owner,
+            repo: this.repo,
+            issue_number: number,
+            labels
+        });
+        // Validate status
+        if (resp.status !== 201) {
+            throw new Error(`Failed to set labels. [status: ${resp.status}]`);
         }
     }
 
@@ -9710,7 +9791,42 @@ module.exports = { GitHubRepository };
 
 /***/ }),
 
-/***/ 885:
+/***/ 7727:
+/***/ ((module) => {
+
+class Logger {
+
+    /**
+     * Creates a new {@link Logger}.
+     */
+    constructor() { }
+
+    /**
+     * Logs an informational message.
+     * @param {string} str
+     *  The informational message. 
+     */
+    info(str) {
+        console.log(`❯ ${str}`)
+    }
+
+    /**
+     * Logs a warning message.
+     * @param {string} str
+     *  The warning message. 
+     */
+    warning(str) {
+        console.log(`⚠ ${str}`);
+    }
+
+}
+
+module.exports = { Logger }
+
+
+/***/ }),
+
+/***/ 1412:
 /***/ ((module) => {
 
 class Package {
@@ -9785,6 +9901,72 @@ class Package {
 }
 
 module.exports = { Package }
+
+
+/***/ }),
+
+/***/ 3229:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+const { Package } = __nccwpck_require__(1412);
+const { existsSync, readFileSync } = __nccwpck_require__(7147);
+
+class PackageParser {
+
+    /**
+     * The release's configured packages.
+     * @returns {Map<string, Package>}
+     *  The release's configured packages.
+     */
+    get packages() {
+        let packages = new Map();
+        let configuredPackages = this._config.packages ?? [];
+        for (let loc in configuredPackages) {
+            let version = manifest[loc];
+            let component = configuredPackages[loc].component ?? "";
+            let tagIncludesName =
+                configuredPackages[loc]["include-component-in-tag"] ??
+                configuredPackages["include-component-in-tag"] ??
+                true;
+            let tagIncludesV =
+                configuredPackages[loc]["include-v-in-tag"] ??
+                configuredPackages["include-v-in-tag"] ??
+                true;
+            let pkg = new Package(
+                component,
+                version,
+                tagIncludesV,
+                tagIncludesName
+            );
+            packages.set(pkg.getTag(), pkg);
+        }
+        return packages;
+    }
+
+
+    /**
+     * Creates a new release-please {@link PackageParser}.
+     * @param {string} config
+     *  The path to the release-please configuration.
+     * @param {string} manifest
+     *  The path to the release-please manifest. 
+     */
+    constructor(config, manifest) {
+        if (!existsSync(config)) {
+            throw new Error(`Configuration '${config}' not found.`);
+        } else if (!existsSync(manifest)) {
+            throw new Error(`Manifest '${manifest}' not found.`);
+        } else {
+            this._config = readFileSync(config);
+            this._config = JSON.parse(this._config.toString("utf-8"));
+            this._manifest = readFileSync(manifest).toString("utf-8");
+            this._manifest = JSON.parse(this._manifest.toString("utf-8"));
+        }
+    }
+
+}
+
+module.exports = { PackageParser }
 
 
 /***/ }),
@@ -9866,14 +10048,6 @@ module.exports = require("os");
 
 "use strict";
 module.exports = require("path");
-
-/***/ }),
-
-/***/ 7282:
-/***/ ((module) => {
-
-"use strict";
-module.exports = require("process");
 
 /***/ }),
 
@@ -9976,74 +10150,47 @@ var __webpack_exports__ = {};
 (() => {
 const core = __nccwpck_require__(2186);
 const github = __nccwpck_require__(5438);
-const { Package } = __nccwpck_require__(885);
+const { Logger } = __nccwpck_require__(7727);
+const { PackageParser } = __nccwpck_require__(3229);
 const { GitHubRepository } = __nccwpck_require__(846);
-const { existsSync, readFileSync } = __nccwpck_require__(7147);
-const process = __nccwpck_require__(7282);
 
 (async function () {
 
     try {
+
+        let logger = new Logger();
+        let repository = new GitHubRepository(TOKEN, github.context);
 
         // 1. Get action inputs
         const TOKEN = core.getInput("token");
         const RELEASE_PLEASE_CONFIG = core.getInput('release-please-config');
         const RELEASE_PLEASE_MANIFEST = core.getInput('release-please-manifest');
 
-        // 2. Load release-please configuration and manifest
-        let config, manifest;
-        if (!existsSync(RELEASE_PLEASE_CONFIG)) {
-            throw new Error(`Configuration '${RELEASE_PLEASE_CONFIG}' not found.`);
-        } else if (!existsSync(RELEASE_PLEASE_MANIFEST)) {
-            throw new Error(`Manifest '${RELEASE_PLEASE_MANIFEST}' not found.`);
-        } else {
-            config = readFileSync(RELEASE_PLEASE_CONFIG);
-            config = JSON.parse(config.toString("utf-8"));
-            manifest = readFileSync(RELEASE_PLEASE_MANIFEST).toString("utf-8");
-            manifest = JSON.parse(manifest.toString("utf-8"));
-        }
-        console.log("✓ Configuration and Manifest files located.")
+        // 2. Load configuration and manifest
+        let parser = new PackageParser(
+            RELEASE_PLEASE_CONFIG,
+            RELEASE_PLEASE_MANIFEST
+        );
+        logger.info("Loaded configuration and Manifest files.")
 
         // 3. Compile package list
-        let packages = config.packages;
-        let unresolvedPackages = new Map();
-        if (Object.keys(packages).length === 0) {
-            throw new Error("No packages to tag.")
-        } else {
-            for (let loc in packages) {
-                let version = manifest[loc];
-                let component = packages[loc].component ?? "";
-                let tagIncludesName =
-                    packages[loc]["include-component-in-tag"] ??
-                    packages["include-component-in-tag"] ??
-                    true;
-                let tagIncludesV =
-                    packages[loc]["include-v-in-tag"] ??
-                    packages["include-v-in-tag"] ??
-                    true;
-                let package = new Package(
-                    component,
-                    version,
-                    tagIncludesV,
-                    tagIncludesName
-                );
-                unresolvedPackages.set(package.getTag(), package);
-            }
+        let packages = parser.packages;
+        if (packages.size === 0) {
+            throw new Error("No packages found.")
         }
-        console.log(`✓ Found ${unresolvedPackages.size} Packages.`);
-        for (let package of unresolvedPackages.values()) {
-            console.log(`  - ${package.getTag()}`)
+        logger.info(`Found ${packages.size} packages.`);
+        for (let package of packages.values()) {
+            logger.info(`  - ${package.getTag()}`)
         }
 
-        // 4. Resolve packages and tags
-        let createTags = new Set([...unresolvedPackages.keys()]);
-        let repo = new GitHubRepository(TOKEN, github.context);
+        // 4. Resolve tags
+        let createTags = new Set([...packages.keys()]);
         // For each repository tag...
-        for await (let repositoryTag of repo.iterateTags()) {
-            // ...attempt to resolve a package
-            for (let [packageTag, package] of unresolvedPackages) {
+        for await (let repositoryTag of repository.iterateTags()) {
+            // ...attempt to match it to a package tag
+            for (let [packageTag, package] of packages) {
                 if (package.isAssociatedWithTag(repositoryTag)) {
-                    unresolvedPackages.delete(packageTag);
+                    packages.delete(packageTag);
                     if (repositoryTag === packageTag) {
                         createTags.delete(packageTag);
                     }
@@ -10051,19 +10198,38 @@ const process = __nccwpck_require__(7282);
                 }
             }
             // If no packages left to resolve, stop iteration
-            if (unresolvedPackages.size === 0) {
+            if (packages.size === 0) {
                 break;
             }
         }
-        console.log(`✓ Resolved Tags`)
+        logger.info("Resolved tags.");
 
-        // Create new tags
+        // 5. Create new tags
         for (let tag of createTags) {
-            repo.createCommitTag(tag);
+            repository.createTag(tag);
         }
-        console.log(`✓ Created ${createTags.size} new tags.`);
+        logger.info(`Created ${createTags.size} new tags.`);
         for (let tag of createTags) {
-            console.log(`  - ${tag}`);
+            logger.info(`  - ${tag}`);
+        }
+
+        // 6. Update Pull Request
+        let prs = await Promise.all(repository.iteratePullRequests({
+            branch: "release-please--branches--main",
+            labels: ["autorelease: pending"],
+            state: "closed"
+        }));
+        if (prs.length === 0) {
+            logger.info(`No release PR to update.`);
+        } else {
+            let pr = prs[0];
+            if (prs.length === 1) {
+                logger.info(`Found release PR: ${pr.title} (#${pr.number}).`);
+            } else {
+                logger.warning(`Found multiple release PRs, selecting newest.`);
+            }
+            repository.setPullRequestLabel(pr.number, ["autorelease: tagged"]);
+            logger.info(`Updated release PRs tags.`)
         }
 
     } catch (err) {
