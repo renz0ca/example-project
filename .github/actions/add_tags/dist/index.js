@@ -9770,7 +9770,6 @@ class GitHubRepository {
      */
     async setPullRequestLabel(number, labels) {
         let { setLabels } = this.octokit.rest.issues;
-        // labels = labels.map(o => ({ name: o }));
         // Set labels
         let resp = await setLabels({
             owner: this.owner,
@@ -10170,14 +10169,14 @@ const { GitHubRepository } = __nccwpck_require__(846);
             RELEASE_PLEASE_CONFIG,
             RELEASE_PLEASE_MANIFEST
         );
-        logger.info("Loaded configuration and Manifest files.")
+        logger.info("Loaded configuration and manifest files.")
 
         // 3. Compile package list
         let packages = parser.packages;
         if (packages.size === 0) {
-            throw new Error("No packages found.")
+            throw new Error("No packages configured.")
         }
-        logger.info(`Found ${packages.size} packages.`);
+        logger.info(`Found ${packages.size} packages:`);
         for (let package of packages.values()) {
             logger.info(`  - ${package.getTag()}`)
         }
@@ -10208,9 +10207,13 @@ const { GitHubRepository } = __nccwpck_require__(846);
         for (let tag of createTags) {
             repository.createTag(tag);
         }
-        logger.info(`Created ${createTags.size} new tags.`);
-        for (let tag of createTags) {
-            logger.info(`  - ${tag}`);
+        if (createTags === 0) {
+            logger.info(`No new tags created.`)
+        } else {
+            logger.info(`Created ${createTags.size} new tags:`);
+            for (let tag of createTags) {
+                logger.info(`  - ${tag}`);
+            }
         }
 
         // 6. Update Pull Request
@@ -10220,9 +10223,9 @@ const { GitHubRepository } = __nccwpck_require__(846);
             state: "closed"
         }).next()).value;
         if (!pr) {
-            logger.info(`No release pull request to update.`);
+            logger.info(`No pull request to update.`);
         } else {
-            logger.info(`Found release pull request: "${pr.title} (#${pr.number})".`);
+            logger.info(`Found pull request: "${pr.title} (#${pr.number})".`);
             repository.setPullRequestLabel(pr.number, ["autorelease: tagged"]);
             logger.info(`Updated pull request labels.`)
         }
