@@ -9769,7 +9769,7 @@ class GitHubRepository {
      *  The pull request's new labels.
      */
     async setPullRequestLabel(number, labels) {
-        let { setLabels } = octokit.rest.issues;
+        let { setLabels } = this.octokit.rest.issues;
         labels = labels.map(o => ({ name: o }));
         // Set labels
         let resp = await setLabels({
