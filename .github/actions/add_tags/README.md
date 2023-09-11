@@ -1,6 +1,6 @@
 # Add-Tags
 
-Compliments [`release-please-action`](https://github.com/google-github-actions/release-please-action) allowing it to function properly without GitHub Releases.
+Compliments [`release-please-action`](https://github.com/google-github-actions/release-please-action), allowing it to function properly without GitHub Releases.
 
 ## Overview
 
@@ -67,4 +67,4 @@ permissions:
   pull-requests: write
 ```
 
-*For more information refer to: [release-please-action](https://github.com/google-github-actions/release-please-action#workflow-permissions).*
+*For more information, refer to: [release-please-action](https://github.com/google-github-actions/release-please-action#workflow-permissions).*
