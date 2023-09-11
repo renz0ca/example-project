@@ -10226,8 +10226,14 @@ const { GitHubRepository } = __nccwpck_require__(846);
             logger.info(`No pull request to update.`);
         } else {
             logger.info(`Found pull request: "${pr.title} (#${pr.number})".`);
-            repository.setPullRequestLabel(pr.number, ["autorelease: tagged"]);
-            logger.info(`Updated pull request labels.`)
+            let labels = new Set(pr.labels.map(o => o.name));
+            labels.delete("autorelease: pending");
+            labels.add("autorelease: tagged");
+            repository.setPullRequestLabel(pr.number, [...labels]);
+            logger.info(`Updated pull request labels:`);
+            for (let label of labels) {
+                logger.info(`  - ${label}`);
+            }
         }
 
     } catch (err) {
