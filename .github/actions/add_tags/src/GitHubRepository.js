@@ -134,7 +134,7 @@ class GitHubRepository {
      */
     async setPullRequestLabel(number, labels) {
         let { setLabels } = this.octokit.rest.issues;
-        labels = labels.map(o => ({ name: o }));
+        // labels = labels.map(o => ({ name: o }));
         // Set labels
         let resp = await setLabels({
             owner: this.owner,

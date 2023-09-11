@@ -9770,7 +9770,7 @@ class GitHubRepository {
      */
     async setPullRequestLabel(number, labels) {
         let { setLabels } = this.octokit.rest.issues;
-        labels = labels.map(o => ({ name: o }));
+        // labels = labels.map(o => ({ name: o }));
         // Set labels
         let resp = await setLabels({
             owner: this.owner,
@@ -10220,11 +10220,11 @@ const { GitHubRepository } = __nccwpck_require__(846);
             state: "closed"
         }).next()).value;
         if (!pr) {
-            logger.info(`No release PR to update.`);
+            logger.info(`No release pull request to update.`);
         } else {
-            logger.info(`Found release PR: ${pr.title} (#${pr.number}).`);
+            logger.info(`Found release pull request: "${pr.title} (#${pr.number})".`);
             repository.setPullRequestLabel(pr.number, ["autorelease: tagged"]);
-            logger.info(`Updated release PRs tags.`)
+            logger.info(`Updated pull request labels.`)
         }
 
     } catch (err) {

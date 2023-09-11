@@ -70,11 +70,11 @@ const { GitHubRepository } = require("./src/GitHubRepository");
             state: "closed"
         }).next()).value;
         if (!pr) {
-            logger.info(`No release PR to update.`);
+            logger.info(`No release pull request to update.`);
         } else {
-            logger.info(`Found release PR: ${pr.title} (#${pr.number}).`);
+            logger.info(`Found release pull request: "${pr.title} (#${pr.number})".`);
             repository.setPullRequestLabel(pr.number, ["autorelease: tagged"]);
-            logger.info(`Updated release PRs tags.`)
+            logger.info(`Updated pull request labels.`)
         }
 
     } catch (err) {
