@@ -9720,7 +9720,7 @@ class GitHubRepository {
      * Iterates through the repository's pull requests from newest to oldest. 
      * @param {PullRequestFilters} filters
      *  The filters to apply to the iteration.
-     * @returns {AsyncGenerator<Object>}
+     * @returns {AsyncGenerator<Object, Object, Object>}
      *  The list of pull requests.
      */
     async *iteratePullRequests(filters) {
@@ -10214,20 +10214,15 @@ const { GitHubRepository } = __nccwpck_require__(846);
         }
 
         // 6. Update Pull Request
-        let prs = await Promise.all(repository.iteratePullRequests({
+        let pr = (await repository.iteratePullRequests({
             branch: "release-please--branches--main",
             labels: ["autorelease: pending"],
             state: "closed"
-        }));
-        if (prs.length === 0) {
+        }).next()).value;
+        if (!pr) {
             logger.info(`No release PR to update.`);
         } else {
-            let pr = prs[0];
-            if (prs.length === 1) {
-                logger.info(`Found release PR: ${pr.title} (#${pr.number}).`);
-            } else {
-                logger.warning(`Found multiple release PRs, selecting newest.`);
-            }
+            logger.info(`Found release PR: ${pr.title} (#${pr.number}).`);
             repository.setPullRequestLabel(pr.number, ["autorelease: tagged"]);
             logger.info(`Updated release PRs tags.`)
         }

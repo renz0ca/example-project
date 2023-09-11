@@ -84,7 +84,7 @@ class GitHubRepository {
      * Iterates through the repository's pull requests from newest to oldest. 
      * @param {PullRequestFilters} filters
      *  The filters to apply to the iteration.
-     * @returns {AsyncGenerator<Object>}
+     * @returns {AsyncGenerator<Object, Object, Object>}
      *  The list of pull requests.
      */
     async *iteratePullRequests(filters) {

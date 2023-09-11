@@ -64,20 +64,15 @@ const { GitHubRepository } = require("./src/GitHubRepository");
         }
 
         // 6. Update Pull Request
-        let prs = await Promise.all(repository.iteratePullRequests({
+        let pr = (await repository.iteratePullRequests({
             branch: "release-please--branches--main",
             labels: ["autorelease: pending"],
             state: "closed"
-        }));
-        if (prs.length === 0) {
+        }).next()).value;
+        if (!pr) {
             logger.info(`No release PR to update.`);
         } else {
-            let pr = prs[0];
-            if (prs.length === 1) {
-                logger.info(`Found release PR: ${pr.title} (#${pr.number}).`);
-            } else {
-                logger.warning(`Found multiple release PRs, selecting newest.`);
-            }
+            logger.info(`Found release PR: ${pr.title} (#${pr.number}).`);
             repository.setPullRequestLabel(pr.number, ["autorelease: tagged"]);
             logger.info(`Updated release PRs tags.`)
         }
