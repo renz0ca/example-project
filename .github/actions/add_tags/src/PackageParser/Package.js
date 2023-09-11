@@ -3,7 +3,7 @@ class Package {
     /**
      * Tag format with name.
      */
-    static ComponentTag = /^(.*)-v?\d+\.\d+\.\d+$/i
+    static ComponentTag = /^(.*?)v?\d+\.\d+\.\d+$/i
 
     /**
      * Tag format with version (with v).
@@ -26,12 +26,15 @@ class Package {
      *  If the package's tag includes V.
      * @param {boolean} tagIncludesName
      *  If the package's tag includes its name.
+     * @param {string} tagSeparator
+     *  The package's name/tag separator.
      */
-    constructor(name, version, tagIncludesV, tagIncludesName) {
+    constructor(name, version, tagIncludesV, tagIncludesName, tagSeparator) {
         this.name = name;
         this.version = version;
         this.tagIncludesV = tagIncludesV;
         this.tagIncludesName = tagIncludesName;
+        this.tagSeparator = tagSeparator;
     }
 
 
@@ -46,7 +49,7 @@ class Package {
         let match;
         if (this.tagIncludesName) {
             match = Package.ComponentTag.exec(tag);
-            return match && match[1] === this.name;
+            return match && match[1] === `${this.name}${this.tagSeparator}`;
         } else if (this.tagIncludesV) {
             match = Package.VersionWithVTag.exec(tag);
             return match !== null;
@@ -62,7 +65,7 @@ class Package {
      *  Returns the package's tag.
      */
     getTag() {
-        let name = this.tagIncludesName ? `${this.name}-` : '';
+        let name = this.tagIncludesName ? `${this.name}${this.tagSeparator}` : '';
         let version = this.tagIncludesV ? `v${this.version}` : this.version;
         return `${name}${version}`;
     }
