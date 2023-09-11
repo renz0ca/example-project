@@ -10159,7 +10159,6 @@ const { GitHubRepository } = __nccwpck_require__(846);
     try {
 
         let logger = new Logger();
-        let repository = new GitHubRepository(TOKEN, github.context);
 
         // 1. Get action inputs
         const TOKEN = core.getInput("token");
@@ -10184,6 +10183,7 @@ const { GitHubRepository } = __nccwpck_require__(846);
         }
 
         // 4. Resolve tags
+        let repository = new GitHubRepository(TOKEN, github.context);
         let createTags = new Set([...packages.keys()]);
         // For each repository tag...
         for await (let repositoryTag of repository.iterateTags()) {
