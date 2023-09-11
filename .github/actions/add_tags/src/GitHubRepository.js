@@ -143,7 +143,7 @@ class GitHubRepository {
             labels
         });
         // Validate status
-        if (resp.status !== 201) {
+        if (resp.status !== 200) {
             throw new Error(`Failed to set labels. [status: ${resp.status}]`);
         }
     }
