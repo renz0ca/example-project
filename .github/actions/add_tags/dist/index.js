@@ -9720,15 +9720,17 @@ class GitHubRepository {
      * Iterates through the repository's pull requests from newest to oldest. 
      * @param {PullRequestFilters} filters
      *  The filters to apply to the iteration.
+     * @param {number} depth
+     *  The max number of iterations. (Default: 500)
      * @returns {AsyncGenerator<Object, Object, Object>}
      *  The list of pull requests.
      */
-    async *iteratePullRequests(filters) {
+    async *iteratePullRequests(filters, depth = 500) {
         let per_page = 100;
         let { list } = this.octokit.rest.pulls;
         let { state, branch, labels } = filters;
         labels ?? [];
-        for (let page = 0; ; i++) {
+        for (let page = 0, iterations = 0; ; i++, iterations += per_page) {
             // Fetch pull requests
             let prs = await list({
                 owner: this.owner,
@@ -9756,6 +9758,10 @@ class GitHubRepository {
             }
             // If at last page, return
             if (prs.data.length < per_page) {
+                break;
+            }
+            // If iteration max reached, return
+            if (max <= iterations) {
                 break;
             }
         }
