@@ -10207,7 +10207,7 @@ const { GitHubRepository } = __nccwpck_require__(846);
         for (let tag of createTags) {
             repository.createTag(tag);
         }
-        if (createTags === 0) {
+        if (createTags.size === 0) {
             logger.info(`No new tags created.`)
         } else {
             logger.info(`Created ${createTags.size} new tags:`);
