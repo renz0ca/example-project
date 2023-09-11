@@ -12,7 +12,7 @@ class PackageParser {
         let packages = new Map();
         let configuredPackages = this._config.packages ?? [];
         for (let loc in configuredPackages) {
-            let version = manifest[loc];
+            let version = this._manifest[loc];
             let component = configuredPackages[loc].component ?? "";
             let tagIncludesName =
                 configuredPackages[loc]["include-component-in-tag"] ??
