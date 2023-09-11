@@ -22,11 +22,16 @@ class PackageParser {
                 configuredPackages[loc]["include-v-in-tag"] ??
                 configuredPackages["include-v-in-tag"] ??
                 true;
+            let tagSeparator =
+                configuredPackages[loc]["tag-separator"] ??
+                configuredPackages["tag-separator"] ??
+                "-";
             let pkg = new Package(
                 component,
                 version,
                 tagIncludesV,
-                tagIncludesName
+                tagIncludesName,
+                tagSeparator
             );
             packages.set(pkg.getTag(), pkg);
         }
